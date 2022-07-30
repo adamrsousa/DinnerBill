@@ -4,19 +4,13 @@ import com.payment.bill.v1.domain.model.GroupSpending;
 import com.payment.bill.v1.domain.model.Person;
 import com.payment.bill.v1.domain.model.exception.NotFoundException;
 import com.payment.bill.v1.domain.repository.GroupSpendingRepository;
-import com.payment.bill.v1.domain.repository.PersonRepository;
-import lombok.var;
 import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class GroupSpendingService {

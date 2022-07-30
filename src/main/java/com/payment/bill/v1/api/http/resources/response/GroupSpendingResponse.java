@@ -4,13 +4,18 @@ import com.payment.bill.v1.domain.model.Person;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class GroupSpendingResponse {
+
+    @ApiModelProperty(value = "Id")
+    private Long id;
 
     @ApiModelProperty(value = "Additionals")
     private BigDecimal additionals;
