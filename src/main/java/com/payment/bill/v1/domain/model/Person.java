@@ -20,6 +20,10 @@ public class Person {
     @Column(name = "name", nullable = false)
     private String name;
 
+    private String email;
+
+    private Long cellPhone;
+
     private BigDecimal personalBill;
 
     private BigDecimal finalBill;

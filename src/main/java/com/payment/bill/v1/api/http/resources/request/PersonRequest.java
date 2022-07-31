@@ -15,6 +15,12 @@ public class PersonRequest {
     @NotEmpty(message = "String name is required")
     private String name;
 
+    @ApiModelProperty(value = "Email")
+    private String email;
+
+    @ApiModelProperty(value = "Cell Phone")
+    private Long cellPhone;
+
     @ApiModelProperty(value = "Personal Bill")
     private BigDecimal personalBill;
 
