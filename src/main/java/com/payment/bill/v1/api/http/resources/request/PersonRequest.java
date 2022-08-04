@@ -11,17 +11,26 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class PersonRequest {
 
-    @ApiModelProperty(value = "Name", required = true)
+    @ApiModelProperty(value = "First name", required = true)
     @NotEmpty(message = "String name is required")
-    private String name;
+    private String firstName;
+
+    @ApiModelProperty(value = "Last name")
+    private String lastName;
 
     @ApiModelProperty(value = "Email")
     private String email;
 
     @ApiModelProperty(value = "Cell Phone")
-    private Long cellPhone;
+    private String phone;
 
     @ApiModelProperty(value = "Personal Bill")
     private BigDecimal personalBill;
+
+    @ApiModelProperty(value = "CPF")
+    private String document;
+
+
+
 
 }

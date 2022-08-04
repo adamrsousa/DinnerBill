@@ -1,5 +1,6 @@
 package com.payment.bill.v1.domain.model;
 
+import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -11,8 +12,8 @@ public class Payment {
     private String callbackUrl;
     private String returnUrl;
     private String expiresAt;
-    private Double value;
-    private Person person;
+    private BigDecimal value;
+    private Buyer buyer;
 
     public Payment(Integer minutesForExpiration) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ");
@@ -29,11 +30,11 @@ public class Payment {
         builder.append(this.expiresAt + "\n");
         builder.append(this.value + "\n");
 
-        builder.append(this.person.getFirstName() + "\n");
-        builder.append(this.person.getLastName() + "\n");
-        builder.append(this.person.getDocument() + "\n");
-        builder.append(this.person.getPhone() + "\n");
-        builder.append(this.person.getEmail() + "\n");
+        builder.append(this.buyer.getFirstName() + "\n");
+        builder.append(this.buyer.getLastName() + "\n");
+        builder.append(this.buyer.getDocument() + "\n");
+        builder.append(this.buyer.getPhone() + "\n");
+        builder.append(this.buyer.getEmail() + "\n");
 
         return builder.toString();
     }

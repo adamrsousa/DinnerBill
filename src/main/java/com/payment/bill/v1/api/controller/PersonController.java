@@ -2,6 +2,7 @@ package com.payment.bill.v1.api.controller;
 
 import com.payment.bill.v1.api.http.resources.request.PersonRequest;
 import com.payment.bill.v1.api.http.resources.response.PersonResponse;
+import com.payment.bill.v1.domain.model.Buyer;
 import com.payment.bill.v1.domain.model.Person;
 import com.payment.bill.v1.domain.service.PersonService;
 import org.modelmapper.ModelMapper;
@@ -44,6 +45,7 @@ public class PersonController {
         Person request = modelMapper.map(personRequest, Person.class);
         Person created = service.create(request);
         PersonResponse response = modelMapper.map(created, PersonResponse.class);
+
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(response);

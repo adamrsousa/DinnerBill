@@ -1,4 +1,4 @@
-package com.payment.bill.v1.domain.model.exception;
+package com.payment.bill.v1.api.controller.exception;
 
 public class StatusChangeException extends RuntimeException {
 

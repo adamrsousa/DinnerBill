@@ -2,7 +2,7 @@ package com.payment.bill.v1.domain.service;
 
 import com.payment.bill.v1.domain.model.GroupSpending;
 import com.payment.bill.v1.domain.model.Person;
-import com.payment.bill.v1.domain.model.exception.NotFoundException;
+import com.payment.bill.v1.api.controller.exception.NotFoundException;
 import com.payment.bill.v1.domain.repository.GroupSpendingRepository;
 import com.payment.bill.v1.domain.repository.PersonRepository;
 import org.modelmapper.Conditions;

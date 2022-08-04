@@ -1,10 +1,10 @@
 package com.payment.bill.v1.domain.model.form;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+import com.payment.bill.v1.domain.model.Buyer;
 import com.payment.bill.v1.domain.model.Payment;
 import com.payment.bill.v1.domain.model.Person;
 import lombok.AllArgsConstructor;
@@ -21,19 +21,10 @@ public class PaymentForm {
     @NotNull @NotEmpty @NotBlank
     private String referenceId;
     @NotNull
-    private Double value;
-    @NotNull @NotEmpty @NotBlank
-    private String firstName;
-    @NotNull @NotEmpty @NotBlank
-    private String lastName;
-    @NotNull @NotEmpty @NotBlank
-    private String document;
-    @NotNull @NotEmpty @NotBlank @Email
-    private String email;
-    @NotNull @NotEmpty @NotBlank
-    private String phone;
+    private BigDecimal value;
 
-    public Payment toPayment(String callbackUrl, String returnUrl, Integer minutesForExpiration, Double value) {
+    public Payment toPayment(String callbackUrl, String returnUrl,
+                             Integer minutesForExpiration, BigDecimal value, Person person) {
         Payment payment = new Payment(minutesForExpiration);
 
         payment.setReferenceId(referenceId);
@@ -41,14 +32,13 @@ public class PaymentForm {
         payment.setReturnUrl(returnUrl);
         payment.setValue(value);
 
-        Person person = new Person();
-        person.setFirstName(firstName);
-        person.setLastName(lastName);
-        person.setDocument(document);
-        person.setEmail(email);
-        person.setPhone(phone);
-        person.setFinalBill(BigDecimal.valueOf(value));
-        payment.setPerson(person);
+        Buyer buyer = new Buyer();
+        buyer.setFirstName(person.getFirstName());
+        buyer.setLastName(person.getLastName());
+        buyer.setDocument(person.getDocument());
+        buyer.setEmail(person.getEmail());
+        buyer.setPhone(person.getPhone());
+        payment.setBuyer(buyer);
 
         return payment;
     }

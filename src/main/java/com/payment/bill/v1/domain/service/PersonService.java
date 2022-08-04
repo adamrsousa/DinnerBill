@@ -1,11 +1,11 @@
 package com.payment.bill.v1.domain.service;
 
+import com.payment.bill.v1.domain.model.Buyer;
 import com.payment.bill.v1.domain.model.Person;
-import com.payment.bill.v1.domain.model.exception.NotFoundException;
+import com.payment.bill.v1.api.controller.exception.NotFoundException;
 import com.payment.bill.v1.domain.repository.PersonRepository;
 import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -47,4 +47,12 @@ public class PersonService {
         personRepository.deleteById(id);
     }
 
+    public Buyer mapToBuyer(Person person) {
+        ModelMapper mapper = new ModelMapper();
+        Buyer buyer = new Buyer();
+
+        mapper.map(person, buyer);
+
+        return buyer;
+    }
 }

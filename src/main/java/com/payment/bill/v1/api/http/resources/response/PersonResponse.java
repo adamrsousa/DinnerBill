@@ -16,17 +16,23 @@ public class PersonResponse {
     @ApiModelProperty(value = "Id")
     private Long id;
 
-    @ApiModelProperty(value = "Name")
-    private String name;
+    @ApiModelProperty(value = "First name", required = true)
+    private String firstName;
+
+    @ApiModelProperty(value = "Last name")
+    private String lastName;
 
     @ApiModelProperty(value = "Email")
     private String email;
 
     @ApiModelProperty(value = "Cell Phone")
-    private Long cellPhone;
+    private String phone;
 
     @ApiModelProperty(value = "Personal Bill")
     private BigDecimal personalBill;
+
+    @ApiModelProperty(value = "CPF")
+    private String document;
 
     @ApiModelProperty(value = "Final Bill")
     private BigDecimal finalBill;
