@@ -18,11 +18,15 @@ public class Person {
     private Long id;
 
     @Column(name = "name", nullable = false)
-    private String name;
+    private String firstName;
+
+    private String lastName;
+
+    private String document;
 
     private String email;
 
-    private Long cellPhone;
+    private String phone;
 
     private BigDecimal personalBill;
 

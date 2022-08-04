@@ -1,4 +1,4 @@
-package com.payment.bill.v1.domain.config;
+package com.payment.bill.v1.api.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
