@@ -4,15 +4,28 @@ import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
+
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
 public class Payment {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private String referenceId;
     private String callbackUrl;
     private String returnUrl;
     private String expiresAt;
     private BigDecimal value;
+    @Embedded
     private Buyer buyer;
 
     public Payment(Integer minutesForExpiration) {
