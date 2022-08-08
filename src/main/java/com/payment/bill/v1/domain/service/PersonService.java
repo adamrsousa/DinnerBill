@@ -32,7 +32,7 @@ public class PersonService {
         return personRepository.findAll(pageable);
     }
 
-    public void update(Long id, Person entity) {
+    public Person update(Long id, Person entity) {
         Person person = findById(id);
 
         ModelMapper mapper = new ModelMapper();
@@ -40,7 +40,7 @@ public class PersonService {
 
         mapper.map(entity, person);
 
-        personRepository.save(person);
+        return personRepository.save(person);
     }
 
     public void delete(Long id) {

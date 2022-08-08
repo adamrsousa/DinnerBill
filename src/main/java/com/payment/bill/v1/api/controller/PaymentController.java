@@ -119,7 +119,7 @@ public class PaymentController {
 
     @GetMapping(value = "/{id}")
     @ResponseBody
-    public ResponseEntity<?> findById(@PathVariable(name = "id") Long id) {
+    public ResponseEntity<PaymentResponse> findById(@PathVariable(name = "id") Long id) {
         final Payment payment = paymentService.findById(id);
         PaymentResponse response = modelMapper.map(payment, PaymentResponse.class);
         return ResponseEntity.ok(response);
@@ -128,7 +128,7 @@ public class PaymentController {
 
     @GetMapping
     @ResponseBody
-    public ResponseEntity<?> findAll(Pageable pageable) {
+    public ResponseEntity<Page<PaymentResponse>> findAll(Pageable pageable) {
         Page<Payment> payments = paymentService.findAll(pageable);
         List<PaymentResponse> content = payments.stream()
                 .map(item -> modelMapper.map(item, PaymentResponse.class))

@@ -67,7 +67,7 @@ public class GroupSpendingService {
         return groupSpendingRepository.findAll(pageable);
     }
 
-    public void update(Long id, GroupSpending entity) {
+    public GroupSpending update(Long id, GroupSpending entity) {
         GroupSpending group = findById(id);
 
         ModelMapper mapper = new ModelMapper();
@@ -76,7 +76,7 @@ public class GroupSpendingService {
         division(entity);
         mapper.map(entity, group);
 
-        groupSpendingRepository.save(group);
+      return groupSpendingRepository.save(group);
     }
 
     public void delete(Long id) {

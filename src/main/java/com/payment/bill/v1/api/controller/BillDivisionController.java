@@ -1,13 +1,9 @@
 package com.payment.bill.v1.api.controller;
 
 import com.payment.bill.v1.api.http.resources.request.GroupSpendingRequest;
-import com.payment.bill.v1.api.http.resources.request.PersonRequest;
 import com.payment.bill.v1.api.http.resources.response.GroupSpendingResponse;
-import com.payment.bill.v1.api.http.resources.response.PersonResponse;
 import com.payment.bill.v1.domain.model.GroupSpending;
-import com.payment.bill.v1.domain.model.Person;
 import com.payment.bill.v1.domain.service.GroupSpendingService;
-import com.payment.bill.v1.domain.service.PersonService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -33,7 +29,7 @@ public class BillDivisionController {
 
     @GetMapping(value = "/{id}")
     @ResponseBody
-    public ResponseEntity<?> findById(@PathVariable(name = "id") Long id) {
+    public ResponseEntity<GroupSpendingResponse> findById(@PathVariable(name = "id") Long id) {
         final GroupSpending group = service.findById(id);
         GroupSpendingResponse response = modelMapper.map(group, GroupSpendingResponse.class);
         return ResponseEntity.ok(response);
@@ -42,7 +38,7 @@ public class BillDivisionController {
 
     @PostMapping
     @ResponseBody
-    public ResponseEntity<?> create(@RequestBody GroupSpendingRequest groupRequest) {
+    public ResponseEntity<GroupSpendingResponse> create(@RequestBody GroupSpendingRequest groupRequest) {
         GroupSpending request = modelMapper.map(groupRequest, GroupSpending.class);
         GroupSpending created = service.create(request);
         GroupSpendingResponse response = modelMapper.map(created, GroupSpendingResponse.class);
@@ -53,22 +49,24 @@ public class BillDivisionController {
 
     @PutMapping(value = "/{id}")
     @ResponseBody
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@PathVariable(name = "id") Long id, @RequestBody GroupSpendingRequest request) {
+    public ResponseEntity<GroupSpendingResponse> update(@PathVariable(name = "id") Long id,
+                                                 @RequestBody GroupSpendingRequest request) {
         GroupSpending data = modelMapper.map(request, GroupSpending.class);
-        service.update(id, data);
+        GroupSpending g = service.update(id, data);
+        GroupSpendingResponse response = modelMapper.map(g, GroupSpendingResponse.class);
+        return ResponseEntity.ok(response);
     }
 
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping(value = "/{id}")
     @ResponseBody
-    public void delete(@PathVariable(name = "id") Long id) {
+    public ResponseEntity<GroupSpendingResponse> delete(@PathVariable(name = "id") Long id) {
         service.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping
     @ResponseBody
-    public ResponseEntity<?> findAll(Pageable pageable) {
+    public ResponseEntity<Page<GroupSpendingResponse>> findAll(Pageable pageable) {
         Page<GroupSpending> group = service.findAll(pageable);
         List<GroupSpendingResponse> content = group.stream()
                 .map(item -> modelMapper.map(item, GroupSpendingResponse.class))
