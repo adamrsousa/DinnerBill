@@ -1,12 +1,16 @@
 package com.payment.bill.v1.api.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.payment.bill.v1.ObjectsDatabase;
 import com.payment.bill.v1.domain.model.GroupSpending;
+import com.payment.bill.v1.domain.model.Person;
 import com.payment.bill.v1.domain.service.GroupSpendingService;
 import org.junit.jupiter.api.*;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -31,10 +35,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = BillDivisionController.class)
-@ContextConfiguration(classes = BillDivisionController.class)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class BillDivisionControllerTests {
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureMockMvc
+public class BillDivisionControllerTests extends ObjectsDatabase {
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -43,26 +46,6 @@ public class BillDivisionControllerTests {
 
     @MockBean
     private GroupSpendingService groupService;
-
-    private GroupSpending groupSpending;
-
-    private GroupSpending newGroupSpending;
-
-    @BeforeEach
-    void setup (){
-        groupSpending = new GroupSpending();
-        groupSpending.setAdditionals(BigDecimal.valueOf(20));
-        groupSpending.setDiscounts(BigDecimal.valueOf(27));
-        groupSpending.setGlobalBill(BigDecimal.valueOf(69));
-        groupSpending.setHasWaiterAdd(false);
-
-
-        newGroupSpending = new GroupSpending();
-        newGroupSpending.setAdditionals(BigDecimal.valueOf(40));
-        newGroupSpending.setDiscounts(BigDecimal.valueOf(23));
-        newGroupSpending.setGlobalBill(BigDecimal.valueOf(99));
-        newGroupSpending.setHasWaiterAdd(true);
-    }
 
     // JUnit: BillDivisionController.create(GroupSpending)
     @DisplayName("JUnit: BillDivisionController.create(GroupSpending)")
@@ -80,7 +63,7 @@ public class BillDivisionControllerTests {
         // ENTÃO: verificação das saídas
         response.andDo(print())
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.additionals", is(groupSpending.getAdditionals())));
+                .andExpect(jsonPath("$.additionals").value(groupSpending.getAdditionals()));
 
     }
 
@@ -120,7 +103,7 @@ public class BillDivisionControllerTests {
         Long groupId = 1L;
         groupSpending.setId(groupId);
 
-        willDoNothing().given(groupService).update(any(Long.class), any(GroupSpending.class));
+        given(groupService.update(any(Long.class), any(GroupSpending.class))).willReturn(groupSpending);
         given(groupService.findById(any(Long.class))).willReturn(groupSpending);
 
 
@@ -132,7 +115,7 @@ public class BillDivisionControllerTests {
 
         // ENTÃO: verificação das saídas
         response.andDo(print())
-                .andExpect(status().isNoContent());
+                .andExpect(status().isOk());
 
     }
 

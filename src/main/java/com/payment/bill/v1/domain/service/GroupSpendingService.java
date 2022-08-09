@@ -25,27 +25,27 @@ public class GroupSpendingService {
         this.personRepository = personRepository;
     }
 
-    private void division(GroupSpending entity) {
+    void division(GroupSpending groupSpending) {
 
-        BigDecimal billBeforeAdditionals= entity.getPeopleList().stream()
+        BigDecimal billBeforeAdditionals= groupSpending.getPeopleList().stream()
                 .map(Person::getPersonalBill)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        BigDecimal globalBill = entity.getGlobalBill();
-        BigDecimal additionals = entity.getAdditionals();
-        BigDecimal discounts = entity.getDiscounts();
+        BigDecimal globalBill = groupSpending.getGlobalBill();
+        BigDecimal additionals = groupSpending.getAdditionals();
+        BigDecimal discounts = groupSpending.getDiscounts();
 
         BigDecimal prefinalBill= billBeforeAdditionals.add(globalBill)
                 .add(additionals)
                 .subtract(discounts);
         BigDecimal finalBill= prefinalBill;
 
-        if (entity.getHasWaiterAdd()) {
+        if (groupSpending.getHasWaiterAdd()) {
             BigDecimal waiterAdd= prefinalBill.multiply(BigDecimal.valueOf(0.1));
             finalBill = prefinalBill.add(waiterAdd);
         }
 
-        for (Person person: entity.getPeopleList()) {
+        for (Person person: groupSpending.getPeopleList()) {
             BigDecimal pBill= (person.getPersonalBill()).multiply(finalBill)
                     .divide(billBeforeAdditionals, 2, RoundingMode.HALF_UP);
             person.setFinalBill(pBill);

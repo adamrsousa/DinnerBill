@@ -1,54 +1,48 @@
 package com.payment.bill.v1.domain.service;
 
+import com.payment.bill.v1.ObjectsDatabase;
 import com.payment.bill.v1.api.controller.exception.NotFoundException;
 import com.payment.bill.v1.domain.model.GroupSpending;
+import com.payment.bill.v1.domain.model.Person;
 import com.payment.bill.v1.domain.repository.GroupSpendingRepository;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.payment.bill.v1.domain.repository.PersonRepository;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-public class GroupSpendingServiceTests {
+@ExtendWith(MockitoExtension.class)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+public class GroupSpendingServiceTests extends ObjectsDatabase {
+
     @Mock
     private GroupSpendingRepository groupRepository;
 
+    @Mock
+    private PersonRepository personRepository;
+
     @InjectMocks
     private GroupSpendingService groupService;
-
-    private GroupSpending groupSpending;
-
-    private GroupSpending newGroupSpending;
-
-    @BeforeEach
-    public void setup() {
-        groupSpending = new GroupSpending();
-        groupSpending.setAdditionals(BigDecimal.valueOf(20));
-        groupSpending.setDiscounts(BigDecimal.valueOf(27));
-        groupSpending.setGlobalBill(BigDecimal.valueOf(69));
-        groupSpending.setHasWaiterAdd(false);
-
-
-        newGroupSpending = new GroupSpending();
-        newGroupSpending.setAdditionals(BigDecimal.valueOf(40));
-        newGroupSpending.setDiscounts(BigDecimal.valueOf(23));
-        newGroupSpending.setGlobalBill(BigDecimal.valueOf(99));
-        newGroupSpending.setHasWaiterAdd(true);
-    }
 
     // Teste JUnit para método GroupSpendingService.create(GroupSpending)
     @DisplayName("Teste JUnit: GroupSpendingService.create(GroupSpending)")
@@ -58,6 +52,8 @@ public class GroupSpendingServiceTests {
         // DADO: pré-condição ou setup
         // do GroupSpendingService, vemos que utilizamos o GroupSpendingRepository.save, que precisa de stubbing.
         given(groupRepository.save(groupSpending)).willReturn(groupSpending);
+        given(personRepository.save(any(Person.class))).willAnswer((invocation) -> invocation.getArgument(0));
+
 
         // QUANDO: ação ou comportamento a ser testado
         GroupSpending savedGroupSpending = groupService.create(groupSpending);
@@ -143,7 +139,6 @@ public class GroupSpendingServiceTests {
 
         // atualizando objeto:
         groupSpending.setDiscounts(BigDecimal.valueOf(203));
-
 
         // QUANDO: ação ou comportamento a ser testado
         groupService.update(groupSpending.getId(), groupSpending);

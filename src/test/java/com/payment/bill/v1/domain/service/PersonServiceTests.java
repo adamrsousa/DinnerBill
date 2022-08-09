@@ -1,5 +1,6 @@
 package com.payment.bill.v1.domain.service;
 
+import com.payment.bill.v1.ObjectsDatabase;
 import com.payment.bill.v1.api.controller.exception.NotFoundException;
 import com.payment.bill.v1.domain.model.Person;
 import com.payment.bill.v1.domain.repository.PersonRepository;
@@ -25,40 +26,13 @@ import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class PersonServiceTests {
+public class PersonServiceTests extends ObjectsDatabase {
 
     @Mock
     private PersonRepository personRepository;
 
     @InjectMocks
     private PersonService personService;
-
-    private Person person;
-
-    private Person newPerson;
-
-    @BeforeEach
-    public void setup() {
-
-        person = new Person();
-        person.setFirstName("Adam");
-        person.setLastName("Reis");
-        person.setDocument("999.999.999-99");
-        person.setEmail("adam@gmail.com");
-        person.setPhone("(99) 99999-9999");
-        person.setPersonalBill(BigDecimal.valueOf(12));
-        person.setFinalBill(BigDecimal.valueOf(14));
-
-
-        newPerson = new Person();
-        person.setFirstName("Adam2");
-        person.setLastName("Reis2");
-        person.setDocument("199.999.999-99");
-        person.setEmail("adammmm@gmail.com");
-        person.setPhone("(99) 99999-9998");
-        person.setPersonalBill(BigDecimal.valueOf(22));
-        person.setFinalBill(BigDecimal.valueOf(34));
-    }
 
     // Teste JUnit para método PersonService.create(Person)
     @DisplayName("Teste JUnit: PersonService.create(Person)")
@@ -67,10 +41,10 @@ public class PersonServiceTests {
 
         // DADO: pré-condição ou setup
         // do PersonService, vemos que utilizamos o PersonRepository.save, que precisa de stubbing.
-        given(personRepository.save(person)).willReturn(person);
+        given(personRepository.save(person1)).willReturn(person1);
 
         // QUANDO: ação ou comportamento a ser testado
-        Person savedPerson = personService.create(person);
+        Person savedPerson = personService.create(person1);
 
         // ENTÃO: verificação das saídas
         System.out.println(savedPerson);
@@ -83,10 +57,10 @@ public class PersonServiceTests {
     public void givenPersonId_whenFindById_thenReturnPerson() {
 
         // DADO: pré-condição ou setup
-        given(personRepository.findById(person.getId())).willReturn(Optional.of(person));
+        given(personRepository.findById(person1.getId())).willReturn(Optional.of(person1));
 
         // QUANDO: ação ou comportamento a ser testado
-        Person savedPerson = personService.findById(person.getId());
+        Person savedPerson = personService.findById(person1.getId());
 
         // ENTÃO: verificação das saídas
         assertThat(savedPerson).isNotNull();
@@ -102,12 +76,12 @@ public class PersonServiceTests {
         NotFoundException notFoundException = new NotFoundException("Não encontrado");
 
         // DADO: pré-condição ou setup
-        given(personRepository.findById(person.getId())).willThrow(notFoundException);
+        given(personRepository.findById(person1.getId())).willThrow(notFoundException);
 
 
         // QUANDO e ENTÃO: ação ou comportamento a ser testado e verificação das saídas
         org.junit.jupiter.api.Assertions.assertThrows(NotFoundException.class, () -> {
-            personService.findById(person.getId());
+            personService.findById(person1.getId());
         });
 
     }
@@ -119,8 +93,8 @@ public class PersonServiceTests {
 
         // DADO: pré-condição ou setup
         List<Person> peopleList = new ArrayList<>();
-        peopleList.add(person);
-        peopleList.add(newPerson);
+        peopleList.add(person1);
+        peopleList.add(person2);
         Page<Person> page = new PageImpl<>(peopleList);
         PageRequest pageRequest = PageRequest.of(1, 20);
 
@@ -148,22 +122,22 @@ public class PersonServiceTests {
     public void givenObjectPerson_whenUpdatePerson_thenReturnUpdatedPerson() {
 
         // DADO: pré-condição ou setup
-        given(personRepository.save(person)).willReturn(person);
+        given(personRepository.save(person1)).willReturn(person1);
 
-        given(personRepository.findById(person.getId())).willReturn(Optional.of(person));
+        given(personRepository.findById(person1.getId())).willReturn(Optional.of(person1));
 
         // atualizando objeto:
-        person.setFirstName("jjj");
+        person1.setFirstName("jjj");
 
 
         // QUANDO: ação ou comportamento a ser testado
-        personService.update(person.getId(), person);
+        personService.update(person1.getId(), person1);
 
         // ENTÃO: verificação das saídas
         // conferindo se personRepository.save foi chamado apenas uma vez
-        verify(personRepository, times(1)).save(person);
-        verify(personRepository, times(1)).findById(person.getId());
-        assertThat(person.getFirstName()).isEqualTo("jjj");
+        verify(personRepository, times(1)).save(person1);
+        verify(personRepository, times(1)).findById(person1.getId());
+        assertThat(person1.getFirstName()).isEqualTo("jjj");
 
     }
 
@@ -174,13 +148,13 @@ public class PersonServiceTests {
 
         // DADO: pré-condição ou setup
         //build do setup
-        willDoNothing().given(personRepository).deleteById(person.getId());
+        willDoNothing().given(personRepository).deleteById(person1.getId());
 
         // QUANDO: ação ou comportamento a ser testado
-        personService.delete(person.getId());
+        personService.delete(person1.getId());
 
         // ENTÃO: verificação das saídas
-        verify(personRepository, times(1)).deleteById(person.getId());
+        verify(personRepository, times(1)).deleteById(person1.getId());
 
     }
 }

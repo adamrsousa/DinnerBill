@@ -1,20 +1,20 @@
 package com.payment.bill.v1.api.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.payment.bill.v1.ObjectsDatabase;
 import com.payment.bill.v1.domain.model.Person;
 import com.payment.bill.v1.domain.service.PersonService;
 import org.junit.jupiter.api.*;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -32,10 +32,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = PersonController.class)
-@ContextConfiguration(classes=PersonController.class)
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class PersonControllerTests {
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureMockMvc
+public class PersonControllerTests extends ObjectsDatabase {
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -45,32 +44,6 @@ public class PersonControllerTests {
 
     @MockBean
     private PersonService personService;
-
-    private Person person;
-
-    private Person newPerson;
-
-    @BeforeEach
-    void setup (){
-        person = new Person();
-        person.setFirstName("Adam");
-        person.setLastName("Reis");
-        person.setDocument("999.999.999-99");
-        person.setEmail("adam@gmail.com");
-        person.setPhone("(99) 99999-9999");
-        person.setPersonalBill(BigDecimal.valueOf(12));
-        person.setFinalBill(BigDecimal.valueOf(14));
-
-
-        newPerson = new Person();
-        person.setFirstName("Adam2");
-        person.setLastName("Reis2");
-        person.setDocument("199.999.999-99");
-        person.setEmail("adammmm@gmail.com");
-        person.setPhone("(99) 99999-9998");
-        person.setPersonalBill(BigDecimal.valueOf(22));
-        person.setFinalBill(BigDecimal.valueOf(34));
-    }
 
     // JUnit: PersonController.create(Person)
     @DisplayName("JUnit: PersonController.create(Person)")
@@ -83,12 +56,12 @@ public class PersonControllerTests {
 
         // QUANDO: ação ou comportamento a ser testado
         ResultActions response = mockMvc.perform(post("/people")
-                .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(person)));
+                .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(person1)));
 
         // ENTÃO: verificação das saídas
         response.andDo(print())
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.firstName", is(person.getFirstName())));
+                .andExpect(jsonPath("$.firstName", is(person1.getFirstName())));
 
     }
 
@@ -100,7 +73,7 @@ public class PersonControllerTests {
 
         // DADO: pré-condição ou setup
         // inserindo lista de alunos
-        List<Person> peopleList = Arrays.asList(person, newPerson);
+        List<Person> peopleList = Arrays.asList(person1, person2);
 
         PageRequest pageable = PageRequest.of(0, 20);
 
@@ -126,21 +99,21 @@ public class PersonControllerTests {
 
         // DADO: pré-condição ou setup
         Long personId = 1L;
-        person.setId(personId);
+        person1.setId(personId);
 
-        willDoNothing().given(personService).update(any(Long.class), any(Person.class));
-        given(personService.findById(any(Long.class))).willReturn(person);
+        given(personService.update(any(Long.class), any(Person.class))).willReturn(person1);
+        given(personService.findById(any(Long.class))).willReturn(person1);
 
 
         // QUANDO: ação ou comportamento a ser testado
-        ResultActions response = mockMvc.perform(put("/people/{id}", person.getId())
+        ResultActions response = mockMvc.perform(put("/people/{id}", person1.getId())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(person)));
+                .content(objectMapper.writeValueAsString(person1)));
 
 
         // ENTÃO: verificação das saídas
         response.andDo(print())
-                .andExpect(status().isNoContent());
+                .andExpect(status().isOk());
 
     }
 
@@ -150,11 +123,11 @@ public class PersonControllerTests {
     public void givenObjectPerson_whenDelete_thenReturn204() throws Exception{
 
         // DADO: pré-condição ou setup
-        person.setId(1L);
-        willDoNothing().given(personService).delete(person.getId());
+        person1.setId(1L);
+        willDoNothing().given(personService).delete(person1.getId());
 
         // QUANDO: ação ou comportamento a ser testado
-        ResultActions response = mockMvc.perform(delete("/people/{id}", person.getId()));
+        ResultActions response = mockMvc.perform(delete("/people/{id}", person1.getId()));
 
         // ENTÃO: verificação das saídas
         response.andDo(print())
