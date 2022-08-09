@@ -69,7 +69,7 @@ public class PaymentController {
 
         final Person persontoPay = personService.findById(id);
         Payment payment = form.toPayment(callbackUrl, returnUrl,
-                minutesForExpirationPayment, persontoPay.getPersonalBill(), persontoPay, uuidAsString);
+                minutesForExpirationPayment, persontoPay.getFinalBill(), persontoPay, uuidAsString);
         paymentService.create(payment);
 
         try {
