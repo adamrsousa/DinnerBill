@@ -2,6 +2,7 @@ package com.payment.bill.v1.api.controller;
 
 import javax.validation.Valid;
 
+import com.payment.bill.v1.api.client.PicPayClient;
 import com.payment.bill.v1.api.http.resources.response.PaymentResponse;
 import com.payment.bill.v1.domain.model.Payment;
 import com.payment.bill.v1.api.http.resources.dto.NewStatusPayment;
@@ -35,12 +36,6 @@ import java.util.stream.Collectors;
 @RequestMapping("/payments")
 public class PaymentController {
 
-    @Value("${picpay.url-generate-payment}")
-    private String urlGeneratePayment;
-
-    @Value("${picpay.url-status-payment}")
-    private String urlStatusPayment;
-
     @Value("${picpay.url-callback-payment}")
     private String callbackUrl;
 
@@ -50,45 +45,35 @@ public class PaymentController {
     @Value("${picpay.minutes-for-expiration-payment}")
     private Integer minutesForExpirationPayment;
 
-    @Value("${picpay.x-picpay-token}")
-    private String picpayToken;
 
     private final PersonService personService;
     private final PaymentService paymentService;
     private final ModelMapper modelMapper;
+    private final PicPayClient picPayClient;
 
-    public PaymentController(PersonService personService, PaymentService paymentService,
-                             ModelMapper modelMapper) {
+    public PaymentController(PersonService personService,
+                             PaymentService paymentService,
+                             ModelMapper modelMapper,
+                             PicPayClient picPayClient) {
         this.personService = personService;
         this.paymentService = paymentService;
         this.modelMapper = modelMapper;
+        this.picPayClient = picPayClient;
     }
 
-    @PostMapping(value = {"", "/"})
+    @PostMapping
     public ResponseEntity<PaymentGenerated> generatePayment(@Valid @RequestBody PaymentForm form,
-                                                            @RequestParam Long id)
-            throws Exception {
-
+                                                            @RequestParam Long id) {
         UUID uuid = UUID.randomUUID();
         String uuidAsString = uuid.toString();
 
-        final Person persontoPay=personService.findById(id);
+        final Person persontoPay = personService.findById(id);
         Payment payment = form.toPayment(callbackUrl, returnUrl,
                 minutesForExpirationPayment, persontoPay.getPersonalBill(), persontoPay, uuidAsString);
         paymentService.create(payment);
 
-        RestTemplate restTemplate = new RestTemplate();
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add("x-picpay-token", picpayToken);
-
-        HttpEntity<Payment> entity = new HttpEntity<>(payment, headers);
-
         try {
-            ResponseEntity<String> response = restTemplate.postForEntity(urlGeneratePayment, entity,
-                    String.class);
-            PaymentGenerated paymentGenerated = new PaymentGenerated(response.getBody());
+           PaymentGenerated paymentGenerated = picPayClient.createPayment(payment);
             return ResponseEntity.ok(paymentGenerated);
         } catch (Exception ex) {
             throw new PaymentRequestException(ex.getMessage());
@@ -98,19 +83,8 @@ public class PaymentController {
     @PostMapping("/status-changed")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<NewStatusPayment> handlePaymentStatusChange(@RequestBody StatusChangeForm form) {
-        String url = String.format(urlStatusPayment, form.getReferenceId());
-
-        RestTemplate restTemplate = new RestTemplate();
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add("x-picpay-token", picpayToken);
-
-        HttpEntity<Object> entity = new HttpEntity<>(headers);
-
         try {
-            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
-            NewStatusPayment newStatusPayment = new NewStatusPayment(response.getBody());
+            NewStatusPayment newStatusPayment = picPayClient.getPaymentStatus(form.getReferenceId());
             return ResponseEntity.ok(newStatusPayment);
         } catch (Exception ex) {
             throw new StatusChangeException(ex.getMessage());
