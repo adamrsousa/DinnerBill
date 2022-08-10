@@ -1,7 +1,7 @@
 package com.payment.bill.v1.api.client;
 
-import com.payment.bill.v1.api.http.resources.dto.NewStatusPayment;
-import com.payment.bill.v1.api.http.resources.dto.PaymentGenerated;
+import com.payment.bill.v1.api.http.resources.response.NewStatusPayment;
+import com.payment.bill.v1.api.http.resources.response.PaymentGenerated;
 import com.payment.bill.v1.domain.model.Payment;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;

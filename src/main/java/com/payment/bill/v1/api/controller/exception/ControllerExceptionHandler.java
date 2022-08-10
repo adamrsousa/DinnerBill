@@ -19,7 +19,7 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(PaymentRequestException.class)
     public ResponseEntity<Object> handlePaymentRequestException(PaymentRequestException ex,
                                                                 WebRequest request) {
-        String userMessage = "Error at generate payment";
+        String userMessage = "Error at generating payment";
         String devMessage = ex.toString();
         List<StandardError> errors = Arrays.asList(new StandardError(userMessage, devMessage));
         return handleExceptionInternal(ex, errors, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
@@ -28,7 +28,7 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(StatusChangeException.class)
     public ResponseEntity<Object> handleChangedStatusException(StatusChangeException ex,
                                                                WebRequest request) {
-        String userMessage = "Error at verify payment status";
+        String userMessage = "Error at verifying payment status";
         String devMessage = ex.toString();
         List<StandardError> errors = Arrays.asList(new StandardError(userMessage, devMessage));
         return handleExceptionInternal(ex, errors, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);

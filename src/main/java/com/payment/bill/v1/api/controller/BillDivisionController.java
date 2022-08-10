@@ -52,8 +52,8 @@ public class BillDivisionController {
     public ResponseEntity<GroupSpendingResponse> update(@PathVariable(name = "id") Long id,
                                                  @RequestBody GroupSpendingRequest request) {
         GroupSpending data = modelMapper.map(request, GroupSpending.class);
-        GroupSpending g = service.update(id, data);
-        GroupSpendingResponse response = modelMapper.map(g, GroupSpendingResponse.class);
+        GroupSpending group = service.update(id, data);
+        GroupSpendingResponse response = modelMapper.map(group, GroupSpendingResponse.class);
         return ResponseEntity.ok(response);
     }
 

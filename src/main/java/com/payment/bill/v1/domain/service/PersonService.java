@@ -19,8 +19,8 @@ public class PersonService {
         this.personRepository = personRepository;
     }
 
-    public Person create(Person entity) {
-        return personRepository.save(entity);
+    public Person create(Person person) {
+        return personRepository.save(person);
     }
 
     public Person findById(Long id) {
@@ -32,27 +32,18 @@ public class PersonService {
         return personRepository.findAll(pageable);
     }
 
-    public Person update(Long id, Person entity) {
-        Person person = findById(id);
+    public Person update(Long id, Person person) {
+        Person personToUpdate = findById(id);
 
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration().setPropertyCondition(Conditions.isNotNull());
 
-        mapper.map(entity, person);
+        mapper.map(person, personToUpdate);
 
-        return personRepository.save(person);
+        return personRepository.save(personToUpdate);
     }
 
     public void delete(Long id) {
         personRepository.deleteById(id);
-    }
-
-    public Buyer mapToBuyer(Person person) {
-        ModelMapper mapper = new ModelMapper();
-        Buyer buyer = new Buyer();
-
-        mapper.map(person, buyer);
-
-        return buyer;
     }
 }

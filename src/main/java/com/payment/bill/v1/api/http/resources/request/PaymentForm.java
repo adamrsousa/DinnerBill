@@ -1,4 +1,4 @@
-package com.payment.bill.v1.domain.model.form;
+package com.payment.bill.v1.api.http.resources.request;
 
 import com.payment.bill.v1.domain.model.Buyer;
 import com.payment.bill.v1.domain.model.Payment;

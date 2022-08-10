@@ -1,4 +1,4 @@
-package com.payment.bill.v1.api.http.resources.dto;
+package com.payment.bill.v1.api.http.resources.response;
 
 import org.json.JSONException;
 import org.json.JSONObject;

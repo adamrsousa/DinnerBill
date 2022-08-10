@@ -54,8 +54,8 @@ public class PersonController {
     public ResponseEntity<PersonResponse> update(@PathVariable(name = "id") Long id,
                                                  @RequestBody PersonRequest request) {
         Person data = modelMapper.map(request, Person.class);
-        Person p = service.update(id, data);
-        PersonResponse response = modelMapper.map(p, PersonResponse.class);
+        Person person = service.update(id, data);
+        PersonResponse response = modelMapper.map(person, PersonResponse.class);
         return ResponseEntity.ok(response);
     }
 

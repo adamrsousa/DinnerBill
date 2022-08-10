@@ -20,7 +20,8 @@ public class GroupSpendingService {
     private final GroupSpendingRepository groupSpendingRepository;
     private final PersonRepository personRepository;
 
-    public GroupSpendingService(GroupSpendingRepository groupSpendingRepository, PersonRepository personRepository) {
+    public GroupSpendingService(GroupSpendingRepository groupSpendingRepository,
+                                PersonRepository personRepository) {
         this.groupSpendingRepository = groupSpendingRepository;
         this.personRepository = personRepository;
     }
@@ -53,9 +54,9 @@ public class GroupSpendingService {
         }
     }
 
-    public GroupSpending create(GroupSpending entity) {
-        division(entity);
-        return groupSpendingRepository.save(entity);
+    public GroupSpending create(GroupSpending group) {
+        division(group);
+        return groupSpendingRepository.save(group);
     }
 
     public GroupSpending findById(Long id) {
@@ -67,16 +68,16 @@ public class GroupSpendingService {
         return groupSpendingRepository.findAll(pageable);
     }
 
-    public GroupSpending update(Long id, GroupSpending entity) {
-        GroupSpending group = findById(id);
+    public GroupSpending update(Long id, GroupSpending group) {
+        GroupSpending groupToUpdate = findById(id);
 
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration().setPropertyCondition(Conditions.isNotNull());
 
-        division(entity);
-        mapper.map(entity, group);
+        division(group);
+        mapper.map(group, groupToUpdate);
 
-      return groupSpendingRepository.save(group);
+      return groupSpendingRepository.save(groupToUpdate);
     }
 
     public void delete(Long id) {
