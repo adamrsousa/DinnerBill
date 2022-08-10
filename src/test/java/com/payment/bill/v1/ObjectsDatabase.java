@@ -1,9 +1,15 @@
 package com.payment.bill.v1;
 
+import com.payment.bill.v1.api.http.resources.request.PaymentForm;
+import com.payment.bill.v1.api.http.resources.response.PaymentGenerated;
+import com.payment.bill.v1.domain.model.Buyer;
 import com.payment.bill.v1.domain.model.GroupSpending;
+import com.payment.bill.v1.domain.model.Payment;
 import com.payment.bill.v1.domain.model.Person;
+import org.modelmapper.ModelMapper;
 
 import java.math.BigDecimal;
+import java.nio.MappedByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +22,10 @@ public class ObjectsDatabase {
     protected GroupSpending groupSpending;
 
     protected GroupSpending newGroupSpending;
+
+    protected Payment payment;
+
+    protected PaymentGenerated paymentGenerated;
 
     public ObjectsDatabase() {
 
@@ -57,6 +67,13 @@ public class ObjectsDatabase {
         newGroupSpending.setGlobalBill(BigDecimal.valueOf(99));
         newGroupSpending.setHasWaiterAdd(true);
         newGroupSpending.setPeopleList(personList);
+
+        payment = new Payment();
+        payment.setReferenceId("id");
+        payment.setCallbackUrl("callback");
+        payment.setReturnUrl("url");
+        payment.setExpiresAt("120");
+        payment.setId(1L);
     }
 
 }
